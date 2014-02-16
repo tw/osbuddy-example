@@ -1,12 +1,14 @@
 package com.osbuddy.example;
 
-import com.osbuddy.api.APIBinding;
+import com.osbuddy.api.event.EventHandler;
+import com.osbuddy.api.event.PaintEvent;
 import com.osbuddy.api.script.StatefulScript;
 import com.osbuddy.api.script.meta.ScriptManifest;
 import com.osbuddy.example.impl.BusyDelegate;
 import com.osbuddy.example.impl.DisorientedDelegate;
 import com.osbuddy.example.impl.IdleDelegate;
-import com.osbuddy.example.override.CustomAPIModule;
+
+import java.awt.*;
 
 import static com.osbuddy.example.ExampleConstants.ACTION_AREA;
 import static com.osbuddy.example.ExampleConstants.ACTION_RADIUS;
@@ -16,11 +18,10 @@ import static com.osbuddy.example.ExampleConstants.ACTION_RADIUS;
  */
 @ScriptManifest(
         name = "Example Script",
-        author="Rick",
-        category="Combat",
+        author = "Rick",
+        category = "Combat",
         description = "An example script that kills goblins."
 )
-@APIBinding(CustomAPIModule.class)
 public class ExampleScript extends StatefulScript<ExampleState> {
 
     @Override
@@ -32,13 +33,22 @@ public class ExampleScript extends StatefulScript<ExampleState> {
 
     @Override
     public ExampleState determine() {
-        if(player.isIdle()) {
-            if(player.distanceTo(ACTION_AREA) > ACTION_RADIUS) {
+        if (player.isIdle()) {
+            if (player.distanceTo(ACTION_AREA) > ACTION_RADIUS) {
                 return ExampleState.DISORIENTED;
             }
             return ExampleState.IDLE;
         }
         return ExampleState.BUSY;
+    }
+
+    @EventHandler
+    public void onPaint(PaintEvent event) {
+        ExampleState state = determine();
+        Graphics g = event.getGraphics();
+        g.setColor(Color.YELLOW);
+        g.drawString("Example script", 10, 30);
+        g.drawString("State: " + state.name(), 10, 60);
     }
 
 }
