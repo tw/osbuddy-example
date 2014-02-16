@@ -1,6 +1,6 @@
 package com.osbuddy.example;
 
-import com.osbuddy.api.event.EventHandler;
+import com.google.common.eventbus.Subscribe;
 import com.osbuddy.api.event.PaintEvent;
 import com.osbuddy.api.script.StatefulScript;
 import com.osbuddy.api.script.meta.ScriptManifest;
@@ -42,7 +42,7 @@ public class ExampleScript extends StatefulScript<ExampleState> {
         return ExampleState.BUSY;
     }
 
-    @EventHandler
+    @Subscribe
     public void onPaint(PaintEvent event) {
         ExampleState state = determine();
         Graphics g = event.getGraphics();
